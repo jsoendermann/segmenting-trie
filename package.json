@@ -1,0 +1,41 @@
+{
+  "name": "segmenting-trie",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jan Soendermann",
+    "email": "jan.soendermann+npm@gmail.com"
+  },
+  "homepage": "https://github.com/jsoendermann/segmenting-trie",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jsoendermann/segmenting-trie.git"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "npm run build",
+    "test": "jest"
+  },
+  "engines": {
+    "node": ">=4.1"
+  },
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "devDependencies": {
+    "jest": "^18.0.0",
+    "ts-jest": "^17.0.3",
+    "typescript": "^2.0.10"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ]
+  }
+}
