@@ -4,7 +4,7 @@ interface Node {
 }
 
 export interface Segment {
-  word: string;
+  str: string;
   isInDict: boolean;
 }
 
@@ -34,93 +34,84 @@ export class Trie {
     });
   }
 
-  splitText(text: string) {
-    let lastCompleteWord = '';
-    let charactersSinceLastCompletedWord = '';
-
+  getFirstWordInText(text: string): string | null {
     let currentNode = this.head;
+    let currentWord = null;
 
-    const feedChar = (char: string) => {
-      const result: Segment[] = [];
-
-      charactersSinceLastCompletedWord += char;
-
+    for (const char of text.split('')) {
       const nextNode = currentNode.children[char];
 
       if (nextNode === undefined) {
-        if (lastCompleteWord === '') {
-          const firstChar = charactersSinceLastCompletedWord[0];
-          result.push({ word: firstChar, isInDict: false });
-          result.push(...feedString(charactersSinceLastCompletedWord.slice(1)));
+        return currentWord;
+      }
+
+      currentNode = nextNode;
+      if (nextNode.isWord) {
+        if (currentWord === null) {
+          currentWord = char;
         } else {
-          result.push({ word: lastCompleteWord, isInDict: true });
-          result.push(...feedString(charactersSinceLastCompletedWord));
-        }
-      } else {
-        currentNode = nextNode;
-
-        if (nextNode.isWord) {
-          lastCompleteWord += charactersSinceLastCompletedWord;
-          charactersSinceLastCompletedWord = '';
+          currentWord += char;
         }
       }
-
-      return result;
-    };
-
-    const feedString = (str: string) => {
-      const result: Segment[] = [];
-
-      currentNode = this.head;
-      lastCompleteWord = '';
-      charactersSinceLastCompletedWord = '';
-
-      str.split('').forEach(char => {
-        const feedCharResult = feedChar(char);
-
-        result.push(...feedCharResult);
-      });
-
-      return result;
-    };
-
-    const result = feedString(text);
-
-    let charactersSinceLastCompletedWordLastIteration = charactersSinceLastCompletedWord;
-    while (currentNode !== this.head) {
-      if (lastCompleteWord !== '') {
-        result.push({ word: lastCompleteWord, isInDict: true });
-      }
-
-      if (lastCompleteWord === '' && charactersSinceLastCompletedWordLastIteration === charactersSinceLastCompletedWord) {
-        result.push({ word: charactersSinceLastCompletedWord[0], isInDict: false });
-        charactersSinceLastCompletedWord = charactersSinceLastCompletedWord.slice(1);
-      }
-      result.push(...feedString(charactersSinceLastCompletedWord));
-
-      charactersSinceLastCompletedWordLastIteration = charactersSinceLastCompletedWord
     }
 
-    if (result.length === 0) {
-      return result;
+    return currentWord;
+  }
+
+  getSegmentAtIndex(text: string, index: number): Segment | null {
+    if (index < 0 || index >= text.length) {
+      return null;
     }
+    
+    let segment = null;
 
-    const resultWithWordsNotInDictMerged = result.slice(1).reduce((prev, current) => {
-      const lastElement = prev[prev.length - 1]
+    while (index >= 0) {
+      const firstWord = this.getFirstWordInText(text);
 
-      if (!lastElement.isInDict && !current.isInDict) {
-        const prevWithoutLast = prev.slice(0, prev.length - 1);
-        const newLast = {
-          word: lastElement.word + current.word,
+      if (firstWord === null) {
+        segment = {
+          str: text[0],
           isInDict: false,
         };
 
-        return [...prevWithoutLast, newLast];
+        index--;
+        text = text.slice(1);
+      } else {
+        segment = {
+          str: firstWord,
+          isInDict: true,
+        };
+        index -= firstWord.length;
+        text = text.slice(firstWord.length);
       }
+    }
 
-      return [...prev, current];
-    }, [result[0]]);
+    return segment;
+  }
 
-    return resultWithWordsNotInDictMerged;
+  segmentText(text: string): Segment[] {
+    const result: Segment[] = [];
+
+    while (text.length > 0) {
+      const firstWord = this.getFirstWordInText(text);
+
+      if (firstWord === null) {
+        result.push({
+          str: text[0],
+          isInDict: false,
+        });
+
+        text = text.slice(1);
+      } else {
+        result.push({
+          str: firstWord,
+          isInDict: true,
+        });
+
+        text = text.slice(firstWord.length);
+      }
+    }
+
+    return result;
   }
 }

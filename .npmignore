@@ -5,3 +5,4 @@ tsconfig.json
 yarn.lock
 Trie.ts
 .vscode
+*.js.map

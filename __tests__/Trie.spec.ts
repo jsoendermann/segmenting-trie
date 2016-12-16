@@ -4,18 +4,54 @@
 describe('Trie', () => {
   const { Trie } = require('../Trie');
 
+  it('should find the first word if there is one', () => {
+    const t = new Trie(['a', 'ab', 'ac']);
+
+    expect(t.getFirstWordInText('abc')).toEqual('ab');
+  });
+
+  it('should return null if there is no first word', () => {
+    const t = new Trie(['a', 'ab', 'ac']);
+
+    expect(t.getFirstWordInText('dabc')).toBeNull();
+  });
+
+  it('should return null as first word of an emptry string', () => {
+    const t = new Trie(['a', 'b']);
+
+    expect(t.getFirstWordInText('')).toBeNull();
+  })
+
+  it('should get the segment at the given index', () => {
+    const t = new Trie(['a', 'ab', 'b']);
+
+    expect(t.getSegmentAtIndex('aabb', 2)).toEqual({
+      str: 'ab',
+      isInDict: true,
+    });
+  });
+
+  it('should return an appropriate segment if there is no word at the index', () => {
+    const t = new Trie(['a', 'ab', 'b']);
+
+    expect(t.getSegmentAtIndex('aa42bb', 2)).toEqual({
+      str: '4',
+      isInDict: false,
+    });
+  });
+
   it('should handle empty texts', () => {
     const t = new Trie(['a', 'b']);
 
-    expect(t.splitText('')).toEqual([]);
+    expect(t.segmentText('')).toEqual([]);
   });
 
   it('should handle empty word lists', () => {
     const t = new Trie([]);
 
-    expect(t.splitText('ab')).toEqual([
+    expect(t.segmentText('a')).toEqual([
       {
-        word: 'ab',
+        str: 'a',
         isInDict: false,
       },
     ]);
@@ -24,32 +60,36 @@ describe('Trie', () => {
   it('should remove empty strings in word lists', () => {
     const t = new Trie(['', 'a']);
 
-    expect(t.splitText('ab')).toEqual([
+    expect(t.segmentText('ab')).toEqual([
       {
-        word: 'a',
+        str: 'a',
         isInDict: true,
       },
       {
-        word: 'b',
+        str: 'b',
         isInDict: false,
       },
     ]);
   });
 
-  it('should merge words that are not in the dict', () => {
+  it('should not merge words that are not in the dict', () => {
     const t = new Trie(['a']);
 
-    expect(t.splitText('a2016a')).toEqual([
+    expect(t.segmentText('a42a')).toEqual([
       {
-        word: 'a',
+        str: 'a',
         isInDict: true,
       },
       {
-        word: '2016',
+        str: '4',
         isInDict: false,
       },
       {
-        word: 'a',
+        str: '2',
+        isInDict: false,
+      },
+      {
+        str: 'a',
         isInDict: true,
       },
     ]);
@@ -58,9 +98,13 @@ describe('Trie', () => {
   it('should handle texts that are prefixes of words in the dict', () => {
     const t = new Trie(['abc']);
 
-    expect(t.splitText('ab')).toEqual([
+    expect(t.segmentText('ab')).toEqual([
       {
-        word: 'ab',
+        str: 'a',
+        isInDict: false,
+      },
+      {
+        str: 'b',
         isInDict: false,
       }
     ]);
