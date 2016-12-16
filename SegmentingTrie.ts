@@ -36,26 +36,26 @@ export class SegmentingTrie {
 
   getFirstWordInText(text: string): string | null {
     let currentNode = this.head;
-    let currentWord = null;
+
+    let longestSeenWord = null;
+    let currentWord = '';
 
     for (const char of text.split('')) {
       const nextNode = currentNode.children[char];
 
       if (nextNode === undefined) {
-        return currentWord;
+        return longestSeenWord;
       }
 
       currentNode = nextNode;
-      if (nextNode.isWord) {
-        if (currentWord === null) {
-          currentWord = char;
-        } else {
-          currentWord += char;
-        }
+      currentWord += char;
+
+      if (currentNode.isWord) {
+        longestSeenWord = currentWord;
       }
     }
 
-    return currentWord;
+    return longestSeenWord;
   }
 
   getSegmentAtIndex(text: string, index: number): Segment | null {

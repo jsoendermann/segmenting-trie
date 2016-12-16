@@ -20,6 +20,15 @@ describe('SegmentingTrie', () => {
     const t = new SegmentingTrie(['a', 'b']);
 
     expect(t.getFirstWordInText('')).toBeNull();
+  });
+
+  it('should work on a real example', () => {
+    const str = '自然灾害吗？北京官员似乎是这么认为的';
+    const dict = ['自然灾害', '自然', '灾害', '自', '然', '灾', '害'];
+
+    const t = new SegmentingTrie(dict);
+    
+    expect(t.getFirstWordInText(str)).toEqual('自然灾害');
   })
 
   it('should get the segment at the given index', () => {
