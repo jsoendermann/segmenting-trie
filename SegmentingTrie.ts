@@ -8,7 +8,7 @@ export interface Segment {
   isInDict: boolean;
 }
 
-export class Trie {
+export class SegmentingTrie {
   private head: Node;
 
   constructor(words: string[]) {

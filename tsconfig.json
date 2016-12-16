@@ -1,6 +1,6 @@
 {
   "include": [
-    "Trie.ts"
+    "./SegmentingTrie.ts"
   ],
   "compilerOptions": {
     "noImplicitAny": true,
