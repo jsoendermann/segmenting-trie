@@ -1,7 +1,5 @@
 node_modules
 npm-debug.log
 .DS_Store
-index.d.ts
-index.js
 dist
 .vscode

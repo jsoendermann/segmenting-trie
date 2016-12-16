@@ -6,7 +6,6 @@
     "noImplicitAny": true,
     "strictNullChecks": true,
     "declaration": true,
-    "outDir":  "dist",
-    "sourceMap": true
+    "outDir":  "dist"
   }
 }

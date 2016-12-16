@@ -3,5 +3,5 @@ node_modules
 .gitignore
 tsconfig.json
 yarn.lock
-index.ts
+Trie.ts
 .vscode
