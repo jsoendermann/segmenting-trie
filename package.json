@@ -20,9 +20,11 @@
   "engines": {
     "node": ">=4.1"
   },
-  "main": "./dist/index.js",
-  "typings": "./dist/index.d.ts",
+  "main": "./dist/Trie.js",
+  "typings": "./dist/Trie.d.ts",
   "devDependencies": {
+    "@types/jest": "^16.0.1",
+    "@types/node": "^6.0.52",
     "jest": "^18.0.0",
     "ts-jest": "^17.0.3",
     "typescript": "^2.0.10"

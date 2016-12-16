@@ -1,11 +1,12 @@
 {
   "include": [
-    "index.ts"
+    "Trie.ts"
   ],
   "compilerOptions": {
     "noImplicitAny": true,
     "strictNullChecks": true,
     "declaration": true,
-    "outDir":  "dist"
+    "outDir":  "dist",
+    "sourceMap": true
   }
 }

@@ -1,4 +1,4 @@
-export interface Node {
+interface Node {
   isWord: boolean;
   children: { [char: string]: Node },
 }
@@ -17,7 +17,7 @@ export class Trie {
       children: {},
     };
 
-    words.forEach(word => {
+    words.filter(w => w !== '').forEach(word => {
       let currentNode = this.head;
 
       word.split('').forEach(char => {
@@ -26,7 +26,6 @@ export class Trie {
             isWord: false,
             children: {}
           };
-
         }
         currentNode = currentNode.children[char];
       });
@@ -54,7 +53,7 @@ export class Trie {
           result.push({ word: firstChar, isInDict: false });
           result.push(...feedString(charactersSinceLastCompletedWord.slice(1)));
         } else {
-          result.push({ word: lastCompleteWord, isInDict: true});
+          result.push({ word: lastCompleteWord, isInDict: true });
           result.push(...feedString(charactersSinceLastCompletedWord));
         }
       } else {
@@ -86,11 +85,42 @@ export class Trie {
     };
 
     const result = feedString(text);
+
+    let charactersSinceLastCompletedWordLastIteration = charactersSinceLastCompletedWord;
     while (currentNode !== this.head) {
-      result.push({ word: lastCompleteWord, isInDict: true});
+      if (lastCompleteWord !== '') {
+        result.push({ word: lastCompleteWord, isInDict: true });
+      }
+
+      if (lastCompleteWord === '' && charactersSinceLastCompletedWordLastIteration === charactersSinceLastCompletedWord) {
+        result.push({ word: charactersSinceLastCompletedWord[0], isInDict: false });
+        charactersSinceLastCompletedWord = charactersSinceLastCompletedWord.slice(1);
+      }
       result.push(...feedString(charactersSinceLastCompletedWord));
+
+      charactersSinceLastCompletedWordLastIteration = charactersSinceLastCompletedWord
     }
 
-    return result;
+    if (result.length === 0) {
+      return result;
+    }
+
+    const resultWithWordsNotInDictMerged = result.slice(1).reduce((prev, current) => {
+      const lastElement = prev[prev.length - 1]
+
+      if (!lastElement.isInDict && !current.isInDict) {
+        const prevWithoutLast = prev.slice(0, prev.length - 1);
+        const newLast = {
+          word: lastElement.word + current.word,
+          isInDict: false,
+        };
+
+        return [...prevWithoutLast, newLast];
+      }
+
+      return [...prev, current];
+    }, [result[0]]);
+
+    return resultWithWordsNotInDictMerged;
   }
 }
